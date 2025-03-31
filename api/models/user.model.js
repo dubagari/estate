@@ -16,6 +16,10 @@ const usereSchema = new mongoose.Schema(
       type: String,
       require: true,
     },
+    avater: {
+      type: String,
+      default: "https://www.pngmart.com/files/23/Profile-PNG-Photo.pngs",
+    },
   },
   { timestamps: true }
 );
