@@ -1,18 +1,89 @@
+import { useRef, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { app } from "../firebase";
 
 const Profile = () => {
   const { currentUser } = useSelector((state) => state.user);
+  const fileref = useRef(null);
+  const [file, setFile] = useState(undefined);
+  const [filePercentage, setFilePercentage] = useState(0);
+  const [fileUploadError, setFileuploadError] = useState(false);
+  const [formdata, setFormData] = useState({});
+  console.log(file);
+  console.log(filePercentage);
+  console.log(formdata);
+
+  useEffect(() => {
+    if (file) {
+      handleFileUpload(file);
+    }
+  }, [file]);
+
+  const handleFileUpload = (file) => {
+    const storage = getStorage(app);
+    const fileName = new Date().getTime() + file.name;
+    const stroageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(stroageRef, file);
+
+    console.log(uploadTask);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const prograss =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+
+        setFilePercentage(Math.round(prograss));
+      },
+      (error) => {
+        setFileuploadError(true);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl) =>
+          setFormData({ ...formdata, avater: downloadUrl })
+        );
+      }
+    );
+  };
   return (
     <div className="max-w-lg mx-auto p-3">
       <h1 className="text-3xl font-semibold text-center my-7 capitalize">
         profile
       </h1>
       <form className="flex flex-col gap-4 mt-4">
+        <input
+          type="file"
+          ref={fileref}
+          hidden
+          accept="image/*"
+          onChange={(e) => setFile(e.target.files[0])}
+        />
         <img
+          onClick={() => fileref.current.click()}
           className="self-center rounded-full h-20 w-20 cursor-pointer mt-2"
-          src={currentUser.avater}
+          src={formdata.avater || currentUser.avater}
           alt="profile"
         />
+
+        <p className="text-center text-sm">
+          {fileUploadError ? (
+            <span className="text-red-600">Error Image uploaded</span>
+          ) : filePercentage > 0 && filePercentage < 100 ? (
+            <span className="text-slate-500 capitalize">{`image uploading ${filePercentage}%`}</span>
+          ) : filePercentage === 100 ? (
+            <span className="text-green-600 capitalize">
+              image successeful uploaded!
+            </span>
+          ) : (
+            ""
+          )}
+        </p>
         <input
           type="text"
           placeholder="username"
