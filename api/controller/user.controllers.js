@@ -1,3 +1,4 @@
+import Listing from "../models/listing.model.js";
 import User from "../models/user.model.js";
 import { errorHandler } from "../util/error.js";
 import bcrypt from "bcryptjs";
@@ -52,5 +53,18 @@ export const signout = (req, res, next) => {
     res.status(200).json("User has been logout");
   } catch (error) {
     next(error);
+  }
+};
+
+export const getUserlisting = async (req, res, next) => {
+  if (req.user.id === req.params.id) {
+    try {
+      const listing = await Listing.find({ userRef: req.params.id });
+      res.status(200).json(listing);
+    } catch (error) {
+      next(error);
+    }
+  } else {
+    return next(errorHandler(401, "you can only view you own listing"));
   }
 };
