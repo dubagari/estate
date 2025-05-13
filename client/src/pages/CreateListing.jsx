@@ -17,7 +17,7 @@ const CreateListing = () => {
     description: "",
     address: "",
     regularprice: 50,
-    discountprice: 50,
+    discountprice: 0,
     bathrooms: 1,
     bedrooms: 1,
     furnished: false,
