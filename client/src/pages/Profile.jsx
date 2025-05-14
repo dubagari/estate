@@ -32,6 +32,7 @@ const Profile = () => {
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [listingError, setListingError] = useState(false);
   const [userListing, setUserListing] = useState([]);
+  const [showListing, setShowlistin] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -141,10 +142,12 @@ const Profile = () => {
   const handleShowListings = async () => {
     try {
       setListingError(false);
+      setShowlistin(true);
       const res = await fetch(`/api/user/listing/${currentUser._id}`);
       const data = await res.json();
       if (data.succcess === false) {
         setListingError(true);
+
         return;
       }
       setUserListing(data);
@@ -263,43 +266,50 @@ const Profile = () => {
         show listing
       </button>
       <p className="text-red-500">{listingError ? "erorr" : ""}</p>
-
-      {userListing && userListing.length > 0 && (
-        <div className="flex flex-col my-5">
-          <h1 className="font-semibold text-3xl text-center mb-7">
-            Your listing
-          </h1>
-          {userListing.map((listings) => (
-            <div
-              key={listings._id}
-              className="flex justify-between items-center border p-2 gap-2"
-            >
-              <Link to={`listing/${listings._id}`}>
-                <img
-                  src={listings.imageUrl[0]}
-                  alt="listing cover"
-                  className="h-16 w-16 object-contain"
-                />
-              </Link>
-              <Link
-                className="hover:underline truncate flex-1"
-                to={`listing/${listings._id}`}
-              >
-                <p>{listings.name}</p>
-              </Link>
-
-              <div className="flex flex-col  p-2">
-                <button className="uppercase text-green-500">edit</button>
-                <button
-                  onClick={() => handleListingDelete(listings._id)}
-                  className="uppercase text-red-500"
+      {showListing && (
+        <>
+          {userListing && userListing.length > 0 ? (
+            <div className="flex flex-col my-5">
+              <h1 className="font-semibold text-3xl text-center mb-7">
+                Your listing
+              </h1>
+              {userListing.map((listings) => (
+                <div
+                  key={listings._id}
+                  className="flex justify-between items-center border p-2 gap-2"
                 >
-                  delete
-                </button>
-              </div>
+                  <Link to={`listing/${listings._id}`}>
+                    <img
+                      src={listings.imageUrl[0]}
+                      alt="listing cover"
+                      className="h-16 w-16 object-contain"
+                    />
+                  </Link>
+                  <Link
+                    className="hover:underline truncate flex-1"
+                    to={`listing/${listings._id}`}
+                  >
+                    <p>{listings.name}</p>
+                  </Link>
+
+                  <div className="flex flex-col  p-2">
+                    <Link to={`/update-listing/${listings._id}`}>
+                      <button className="uppercase text-green-500">edit</button>
+                    </Link>
+                    <button
+                      onClick={() => handleListingDelete(listings._id)}
+                      className="uppercase text-red-500"
+                    >
+                      delete
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          ) : (
+            <p className="text-red-500">nothing to show</p>
+          )}
+        </>
       )}
     </div>
   );
