@@ -97,11 +97,12 @@ const CreateListing = () => {
       });
     }
 
-    if (
-      e.target.type === "number" ||
-      e.target.type === "text" ||
-      e.target.type === "textarea"
-    ) {
+    if (e.target.type === "number") {
+      setFormData({
+        ...formData,
+        [e.target.id]: Number(e.target.value),
+      });
+    } else if (e.target.type === "text" || e.target.type === "textarea") {
       setFormData({
         ...formData,
         [e.target.id]: e.target.value,
@@ -114,7 +115,7 @@ const CreateListing = () => {
     try {
       if (formData.imageUrl.length < 1)
         return setError("you must upload at lest 1 image");
-      if (+formData.regularprice < +formData.discountprice)
+      if (formData.regularprice < formData.discountprice)
         return setError("Discount price must be less tha regular price ");
       setLoading(true);
       setError(false);
@@ -200,7 +201,7 @@ const CreateListing = () => {
                 className="w-5"
                 id="parking"
                 onChange={handleChange}
-                value={formData.parking}
+                checked={formData.parking}
               />
               <span>parking spot</span>
             </div>
@@ -210,7 +211,7 @@ const CreateListing = () => {
                 className="w-5"
                 id="furnished"
                 onChange={handleChange}
-                value={formData.furnished}
+                checked={formData.furnished}
               />
               <span>Funished</span>
             </div>
@@ -220,7 +221,7 @@ const CreateListing = () => {
                 className="w-5"
                 id="offer"
                 onChange={handleChange}
-                value={formData.offer}
+                checked={formData.offer}
               />
               <span>Offer</span>
             </div>
@@ -272,6 +273,8 @@ const CreateListing = () => {
                 <input
                   type="number"
                   className="h-9 w-12 focus:outline-none"
+                  min="0"
+                  max="100000"
                   id="discountprice"
                   onChange={handleChange}
                   value={formData.discountprice}

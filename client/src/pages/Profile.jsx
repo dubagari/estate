@@ -278,7 +278,7 @@ const Profile = () => {
                   key={listings._id}
                   className="flex justify-between items-center border p-2 gap-2"
                 >
-                  <Link to={`listing/${listings._id}`}>
+                  <Link to={`/listing/${listings._id}`}>
                     <img
                       src={listings.imageUrl[0]}
                       alt="listing cover"
@@ -287,7 +287,7 @@ const Profile = () => {
                   </Link>
                   <Link
                     className="hover:underline truncate flex-1"
-                    to={`listing/${listings._id}`}
+                    to={`/listing/${listings._id}`}
                   >
                     <p>{listings.name}</p>
                   </Link>
