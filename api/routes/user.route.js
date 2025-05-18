@@ -4,6 +4,7 @@ import {
   test,
   updateUser,
   getUserlisting,
+  getUser,
 } from "../controller/user.controllers.js";
 import { verifyToken } from "../util/verifyUser.js";
 
@@ -13,5 +14,6 @@ route.get("/test", test);
 route.post("/update/:id", verifyToken, updateUser);
 route.delete("/delete/:id", verifyToken, deleteUser);
 route.get("/listing/:id", verifyToken, getUserlisting);
+route.get("/:id", verifyToken, getUser);
 
 export default route;
