@@ -41,11 +41,11 @@ const Contact = ({ listing }) => {
             id="message"
             value={message}
             onChange={onChange}
-            className="outline-none p-3 rounded-lg border w-full"
+            className="outline-none p-3 rounded-lg border w-full border-slate-700"
           />
 
           <Link
-            to={`mailto:${landlord.email}?subject=regarding ${listing.name}&body=${message}`}
+            to={`mailto:${landlord.email}?subject=regarding${listing.name}&body=${message}`}
             className=" bg-slate-700 text-white rounded-lg p-3 text-center uppercase hover:opacity-95"
           >
             send message
