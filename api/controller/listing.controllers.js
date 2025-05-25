@@ -88,9 +88,9 @@ export const getListings = async (req, res, next) => {
 
     const searchTrems = req.query.searchTrems || "";
 
-    const sort = req.query.sort || "createdAt";
+    const sort = req.query.sort || "created_at";
 
-    const order = req.query.sort || "desc";
+    const order = req.query.order || "desc";
 
     const listing = await Listing.find({
       name: { $regex: searchTrems, $options: "i" },
