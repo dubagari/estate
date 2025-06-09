@@ -5,7 +5,7 @@ import SignIn from "./pages/SignIn";
 import Profile from "./pages/Profile";
 import SignUp from "./pages/SignUp";
 import Header from "./pages/components/Header";
-import Private from "./pages/components/Private";
+import PrivateRoute from "./pages/components/PrivateRoute";
 import CreateListing from "./pages/createListing";
 import UpdateListing from "./pages/updateListing";
 import Listing from "./pages/Listing";
@@ -22,7 +22,7 @@ const App = () => {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/listing/:id" element={<Listing />} />
         <Route path="/search" element={<Search />} />
-        <Route element={<Private />}>
+        <Route element={<PrivateRoute />}>
           <Route path="/profile" element={<Profile />} />
           <Route path="/create-listing" element={<CreateListing />} />
           <Route path="/update-listing/:id" element={<UpdateListing />} />
