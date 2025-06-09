@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Button from "./components/Button";
 import { useNavigate } from "react-router-dom";
+import ListingsItems from "./components/ListingsItems";
+import { set } from "mongoose";
 
 const Search = () => {
   const navigate = useNavigate();
   const [sidebardata, setSidebardata] = useState({
-    SearchTerm: "",
+    searchTerm: "",
     type: "all",
     parking: false,
     furnished: false,
@@ -15,14 +17,15 @@ const Search = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [listing, setLesting] = useState([]);
+  const [listings, setLestings] = useState([]);
+  const [showmore, setShowmore] = useState(false);
 
-  console.log(listing);
+  console.log(listings);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
 
-    const SearchTerm = urlParams.get("SearchTerm");
+    const searchTerm = urlParams.get("searchTerm");
     const type = urlParams.get("type");
     const parking = urlParams.get("parking");
     const furnished = urlParams.get("furnished");
@@ -30,9 +33,9 @@ const Search = () => {
     const sort = urlParams.get("sort");
     const order = urlParams.get("order");
 
-    if (SearchTerm || type || parking || furnished || offer || sort || order) {
+    if (searchTerm || type || parking || furnished || offer || sort || order) {
       setSidebardata({
-        SearchTerm: SearchTerm || "",
+        searchTerm: searchTerm || "",
         type: type || "all",
         parking: parking === "true" ? true : false,
         furnished: furnished === "true" ? true : false,
@@ -47,7 +50,10 @@ const Search = () => {
       const searchQuery = urlParams.toString();
       const res = await fetch(`/api/listing/get?${searchQuery}`);
       const data = await res.json();
-      setLesting(data);
+      if (data.length > 8) {
+        setShowmore(true);
+      }
+      setLestings(data);
       setLoading(false);
     };
 
@@ -60,13 +66,11 @@ const Search = () => {
       e.target.id === "rent" ||
       e.target.id === "sell"
     ) {
-      setSidebardata({ ...sidebardata, type: e.target.value });
+      setSidebardata({ ...sidebardata, type: e.target.id });
     }
-
-    if (e.target.id === "SearchTerm") {
-      setSidebardata({ ...sidebardata, SearchTerm: e.target.value });
+    if (e.target.id === "searchTerm") {
+      setSidebardata({ ...sidebardata, searchTerm: e.target.value });
     }
-
     if (
       e.target.id === "parking" ||
       e.target.id === "furnished" ||
@@ -78,11 +82,9 @@ const Search = () => {
           e.target.checked || e.target.checked === "true" ? true : false,
       });
     }
-
     if (e.target.id === "sort_order") {
       const sort = e.target.value.split("_")[0] || "created_at";
       const order = e.target.value.split("_")[1] || "desc";
-
       setSidebardata({ ...sidebardata, sort, order });
     }
   };
@@ -90,7 +92,7 @@ const Search = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const urlParams = new URLSearchParams();
-    urlParams.set("SearchTerm", sidebardata.SearchTerm);
+    urlParams.set("searchTerm", sidebardata.searchTerm);
 
     urlParams.set("type", sidebardata.type);
     urlParams.set("parking", sidebardata.parking);
@@ -102,6 +104,19 @@ const Search = () => {
 
     navigate(`/search?${searchQuery}`);
   };
+
+  const onShowMoreClick = async () => {
+    const startIndex = listings.length;
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set("startIndex", startIndex);
+    const searchQuery = urlParams.toString();
+    const res = await fetch(`/api/listing/get?${searchQuery}`);
+    const data = await res.json();
+    if (data.length < 9) {
+      setShowmore(false);
+    }
+    setLestings([...listings, ...data]);
+  };
   return (
     <div className="flex flex-col sm:flex-row">
       <div className="border border-b-2 md:border-r-2 md:min-h-screen p-7">
@@ -112,10 +127,10 @@ const Search = () => {
             </label>
             <input
               type="text"
-              id="SearchTerm"
+              id="searchTerm"
               placeholder="search..."
               className="w-full p-2 border rounded-lg outline-none"
-              value={sidebardata.SearchTerm}
+              value={sidebardata.searchTerm}
               onChange={handleChange}
             />
           </div>
@@ -189,16 +204,39 @@ const Search = () => {
             >
               <option value="regularprice_desc">price high to low</option>
               <option value="regularprice_asc">price low to high</option>
-              <option value="created_at_desc">Latest</option>
-              <option value="created_at_asc">Older</option>
+              <option value="createdAt_desc">Latest</option>
+              <option value="createdAt_asc">Older</option>
             </select>
           </div>
           <Button title="search" />
         </form>
       </div>
 
-      <div className="text-3xl font-semibold mt-5 p-3 capitalize border-b-2 text-slate-700">
-        <h1>listing result:</h1>
+      <div className=" w-full border-b-2">
+        <h1 className="text-3xl font-semibold mt-5 p-3 capitalize  text-slate-700">
+          listing result:
+        </h1>
+        <div className="pt-3">
+          {!loading && listings.length === 0 && <p className="">No listing</p>}
+        </div>
+        <div className="text-center pt-4 text-slate-600">
+          {loading && <p>Loading...</p>}
+        </div>
+        <div className="flex   gap-5 flex-wrap p-4">
+          {!loading &&
+            listings &&
+            listings?.map((listings) => (
+              <ListingsItems key={listings._id} listings={listings} />
+            ))}
+        </div>
+        {showmore && (
+          <button
+            className="text-green-500 text-lg my-5 text-center p-7 w-full hover:underline"
+            onClick={onShowMoreClick}
+          >
+            show more...
+          </button>
+        )}
       </div>
     </div>
   );

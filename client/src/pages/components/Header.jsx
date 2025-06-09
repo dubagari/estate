@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 const Header = () => {
   const { currentUser } = useSelector((state) => state.user);
-  const [SearchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
@@ -13,7 +13,7 @@ const Header = () => {
 
     const urlParams = new URLSearchParams(window.location.search);
 
-    urlParams.set("SearchTerm", SearchTerm);
+    urlParams.set("searchTerm", searchTerm);
 
     const searchQuery = urlParams.toString();
 
@@ -30,9 +30,9 @@ const Header = () => {
   }, [location.search]);
   return (
     <header className="bg-slate-200 shadow-md">
-      <div className="max-w-6xl flex justify-between p-3 mx-auto items-center ">
+      <div className="max-w-7xl flex justify-between p-3 mx-auto items-center ">
         <Link to={"/"}>
-          <h1 className="font-bold text-sm sm:text-xl">
+          <h1 className="font-bold text-sm sm:text-xl outline-none">
             <span className="text-slate-500 capitalize">real</span>
             <span className="text-slate-700 ">Estate</span>
           </h1>
@@ -47,9 +47,11 @@ const Header = () => {
             placeholder="Saerch..."
             className="bg-transparent focus:outline-none w-24 sm:w-64"
             onChange={(e) => setSearchTerm(e.target.value)}
-            value={SearchTerm}
+            value={searchTerm}
           />
-          <FaSearch className="text-slate-400 cursor-pointer" />
+          <button>
+            <FaSearch className="text-slate-400 cursor-pointer" />
+          </button>
         </form>
         <ul className="flex gap-4">
           <Link to={"/"}>

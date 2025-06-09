@@ -89,7 +89,10 @@ const Listing = () => {
 
                 {listing?.offer && (
                   <p className="bg-green-500 w-full max-w-[200px] p-2 text-center capitalize rounded-lg  text-white">
-                    ${+listing?.regularprice - +listing?.discountprice}
+                    $
+                    {(
+                      +listing?.regularprice - +listing?.discountprice
+                    ).toLocaleString("en-US")}
                   </p>
                 )}
               </div>

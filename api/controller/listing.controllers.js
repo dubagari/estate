@@ -69,7 +69,7 @@ export const getListings = async (req, res, next) => {
       offer = { $in: [false, true] };
     }
 
-    let furnished = req.query.oofer;
+    let furnished = req.query.furnished;
 
     if (furnished === undefined || furnished === "false") {
       furnished = { $in: [false, true] };
@@ -86,14 +86,14 @@ export const getListings = async (req, res, next) => {
       type = { $in: ["sell", "rent"] };
     }
 
-    const searchTrems = req.query.searchTrems || "";
+    const searchTerm = req.query.searchTerm || "";
 
-    const sort = req.query.sort || "created_at";
+    const sort = req.query.sort || "createdAt";
 
     const order = req.query.order || "desc";
 
     const listing = await Listing.find({
-      name: { $regex: searchTrems, $options: "i" },
+      name: { $regex: searchTerm, $options: "i" },
       parking,
       offer,
       furnished,
