@@ -9,10 +9,10 @@ export const signup = async (req, res, next) => {
   const newUser = new User({ username, email, password: hassPassword });
 
   const existingUser = await User.findOne({ email });
-  if (existingUser) {
-    return res.status(400).json({ message: "Email has already been taken" });
-  }
+
   try {
+    if (existingUser)
+      return next(errorHandler(404, "Email has already been taken"));
     await newUser.save();
     res.status(201).json("user created succesefully");
   } catch (error) {

@@ -8,6 +8,7 @@ import { useState } from "react";
 import { app } from "../firebase";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import Button from "./components/Button";
 
 const CreateListing = () => {
   const [files, setFiles] = useState([]);
@@ -328,12 +329,11 @@ const CreateListing = () => {
                 </button>
               </div>
             ))}
-          <button
+          <Button
             disabled={uploading || loading}
-            className="p-3 bg-gray-800 text-white uppercase rounded-lg hover:shadow-lg disabled:opacity-90"
-          >
-            {loading ? "creating..." : "creating listing"}
-          </button>
+            title={loading ? "creating..." : "creating listing"}
+          />
+
           {error && <p className="text-red-700">{error}</p>}
         </div>
       </form>

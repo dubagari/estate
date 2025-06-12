@@ -198,7 +198,7 @@ const Search = () => {
             </label>
             <select
               onChange={handleChange}
-              value="created_at_desc"
+              value={`${sidebardata.sort}_${sidebardata.order}`}
               id="sort_order"
               className="p-2 rounded-lg"
             >
@@ -208,7 +208,9 @@ const Search = () => {
               <option value="createdAt_asc">Older</option>
             </select>
           </div>
-          <Button title="search" />
+          <div className="mt-6">
+            <Button title="search" />
+          </div>
         </form>
       </div>
 
@@ -216,8 +218,10 @@ const Search = () => {
         <h1 className="text-3xl font-semibold mt-5 p-3 capitalize  text-slate-700">
           listing result:
         </h1>
-        <div className="pt-3">
-          {!loading && listings.length === 0 && <p className="">No listing</p>}
+        <div className="pt-3 flex justify-center items-center">
+          {!loading && listings.length === 0 && (
+            <p className="text-2xl">No listing</p>
+          )}
         </div>
         <div className="text-center pt-4 text-slate-600">
           {loading && <p>Loading...</p>}

@@ -342,6 +342,7 @@ const UpdateListing = () => {
                 </button>
               </div>
             ))}
+
           <button
             disabled={uploading || loading}
             className="p-3 bg-gray-800 text-white uppercase rounded-lg hover:shadow-lg disabled:opacity-90"

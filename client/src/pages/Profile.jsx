@@ -21,6 +21,7 @@ import {
 
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import Button from "./components/Button";
 
 const Profile = () => {
   const { currentUser, loading, error } = useSelector((state) => state.user);
@@ -229,12 +230,9 @@ const Profile = () => {
           onChange={handleChange}
           className="rounded-lg p-2 focus:outline-none"
         />
-        <button
-          disabled={loading}
-          className="bg-slate-700 text-white p-2 uppercase rounded-lg hover:opacity-95 disabled:80"
-        >
-          {loading ? "loading" : "update"}
-        </button>
+        <div className="mt-3">
+          <Button disabled={loading} title={loading ? "loading" : "update"} />
+        </div>
 
         <Link
           className="p-3 bg-green-700 rounded-lg text-white text-center uppercase hover:opacity-95"

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -14,6 +14,8 @@ const SignUp = () => {
   const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  console.log();
 
   const handleChange = (e) => {
     setFormData({
@@ -39,15 +41,20 @@ const SignUp = () => {
       const data = await res.json();
 
       if (data.success === false) {
-        dispatch(signInFailure(data.massage));
+        dispatch(signInFailure("Email has already been taken"));
         return;
       }
+
       dispatch(signInSuccess(data));
       navigate("/sign-in");
     } catch (error) {
       dispatch(signInFailure(error.massage));
     }
   };
+
+  useEffect(() => {
+    dispatch(signInFailure(null)); // clear error on mount
+  }, [dispatch]);
   console.log(formData);
 
   return (
@@ -76,12 +83,8 @@ const SignUp = () => {
           onChange={handleChange}
         />
 
-        <button
-          disabled={loading}
-          className="bg-slate-700 p-2 rounded-lg hover:opacity-95 uppercase text-white disabled:opacity-80"
-        >
-          {loading ? "Loading" : "sign up"}
-        </button>
+        <Button disabled={loading} title={loading ? "Loading" : "sign up"} />
+
         <OAuth />
       </form>
       <div className="mt-5 flex gap-2">
