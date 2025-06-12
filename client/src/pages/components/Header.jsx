@@ -31,8 +31,8 @@ const Header = () => {
   return (
     <header className="bg-slate-200 shadow-md">
       <div className="max-w-7xl flex justify-between p-3 mx-auto items-center ">
-        <Link to={"/"}>
-          <h1 className="font-bold text-sm sm:text-xl outline-none">
+        <Link to={"/"} className="outline-none">
+          <h1 className="font-bold text-sm sm:text-xl ">
             <span className="text-slate-500 capitalize">real</span>
             <span className="text-slate-700 ">Estate</span>
           </h1>

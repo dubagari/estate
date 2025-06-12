@@ -52,7 +52,7 @@ const Home = () => {
   return (
     <div>
       <div className="p-28 max-w-7xl px-6 mx-auto flex flex-col gap-6">
-        <h1 className="text-slate-900 text-6xl font-bold ">
+        <h1 className="text-slate-900 text-6xl sm:text-3xl font-bold ">
           Lorem ipsum dolor <span className="text-slate-600">consectetur</span>{" "}
           <br />
           adipisicing elit.
@@ -101,7 +101,7 @@ const Home = () => {
               </Link>
             </div>
 
-            <div className="flex gap-5 flex-wrap">
+            <div className="flex gap-5 flex-wrap justify-center">
               {offerListing.map((listing) => (
                 <ListingsItems listings={listing} key={listing._id} />
               ))}
@@ -123,7 +123,7 @@ const Home = () => {
               </Link>
             </div>
 
-            <div className="flex gap-5 flex-wrap">
+            <div className="flex gap-5 flex-wrap justify-center">
               {sellListing.map((listing) => (
                 <ListingsItems listings={listing} key={listing._id} />
               ))}
@@ -145,7 +145,7 @@ const Home = () => {
               </Link>
             </div>
 
-            <div className="flex gap-5 flex-wrap">
+            <div className="flex gap-5 flex-wrap justify-center">
               {rentListing.map((listing) => (
                 <ListingsItems listings={listing} key={listing._id} />
               ))}

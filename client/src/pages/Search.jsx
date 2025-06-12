@@ -226,7 +226,7 @@ const Search = () => {
         <div className="text-center pt-4 text-slate-600">
           {loading && <p>Loading...</p>}
         </div>
-        <div className="flex   gap-5 flex-wrap p-4">
+        <div className="flex justify-center gap-5 flex-wrap p-4">
           {!loading &&
             listings &&
             listings?.map((listings) => (
