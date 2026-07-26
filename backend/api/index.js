@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import path from "path";
+import cors from "cors";
 
 import userRoute from "./routes/user.route.js";
 import authRoute from "./routes/auth.route.js";
@@ -24,9 +25,34 @@ mongoose
     console.log(err);
   });
 
+
 const __dirname = path.resolve();
 
+
+
 const app = express();
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://your-client.vercel.app"
+];
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  })
+);
+
+
 app.use(express.json());
 
 app.use(cookieParser());
