@@ -29,7 +29,7 @@ const Listing = () => {
     const fetchlisting = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/listing/get/${Params.id}`);
+        const res = await fetch(`${import.meta.env.VITE_URL}/api/listing/get/${Params.id}`);
 
         const data = await res.json();
 

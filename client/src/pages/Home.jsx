@@ -19,7 +19,7 @@ const Home = () => {
   useEffect(() => {
     const offerListing = async () => {
       try {
-        const res = await fetch(`/api/listing/get?offer=true&limit=4`);
+        const res = await fetch(`${import.meta.env.VITE_URL}/api/listing/get?offer=true&limit=4`);
         const data = await res.json();
         setOfferListing(data);
         rentListing();
@@ -29,7 +29,7 @@ const Home = () => {
     };
     const rentListing = async () => {
       try {
-        const res = await fetch(`/api/listing/get?type=rent&limit=4`);
+        const res = await fetch(`${import.meta.env.VITE_URL}/api/listing/get?type=rent&limit=4`);
         const data = await res.json();
         setRentListing(data);
         sellListing();
@@ -39,7 +39,7 @@ const Home = () => {
     };
     const sellListing = async () => {
       try {
-        const res = await fetch(`/api/listing/get?type=sell&limit=4`);
+        const res = await fetch(`${import.meta.env.VITE_URL}/api/listing/get?type=sell&limit=4`);
         const data = await res.json();
         setSellListing(data);
       } catch (error) {

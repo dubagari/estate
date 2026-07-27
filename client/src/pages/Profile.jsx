@@ -37,11 +37,10 @@ const Profile = () => {
 
   const dispatch = useDispatch();
 
-  console.log(userListing);
+console.log("currentUser:", currentUser);
+console.log("currentUser._id:", currentUser?._id);
 
-  // console.log(file);
-  // console.log(filePercentage);
-  // console.log(formdata);
+
 
   useEffect(() => {
     if (file) {
@@ -86,14 +85,15 @@ const Profile = () => {
     try {
       dispatch(updateUserStart());
 
-      const res = await fetch(`api/user/update/${currentUser._id}`, {
+      const res = await fetch(`${import.meta.env.VITE_URL}/api/user/update/${currentUser._id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(formdata),
       });
       const data = await res.json();
 
-      if (data.succcess === false) {
+      if (data.success === false) {
         dispatch(updateUserFailure(data.message));
         return;
       }
@@ -108,12 +108,13 @@ const Profile = () => {
   const handleDeleteUser = async () => {
     try {
       dispatch(deleteUserStatar());
-      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+      const res = await fetch(`${import.meta.env.VITE_URL}/api/user/delete/${currentUser._id}`, {
+        credentials: "include",
         method: "DELETE",
       });
 
       const data = await res.json();
-      if (data.succcess === false) {
+      if (data.success === false) {
         dispatch(deleteUsereFailure(data.message));
         return;
       }
@@ -127,10 +128,10 @@ const Profile = () => {
     try {
       dispatch(signoutUserStatar());
 
-      const res = await fetch("/api/auth/signout");
+      const res = await fetch(`${import.meta.env.VITE_URL}/api/auth/signout`);
       const data = await res.json();
 
-      if (data.succcess === false) {
+      if (data.success === false) {
         dispatch(signoutUsereFailure(data.message));
         return;
       }
@@ -144,9 +145,9 @@ const Profile = () => {
     try {
       setListingError(false);
       setShowlistin(true);
-      const res = await fetch(`/api/user/listing/${currentUser._id}`);
+      const res = await fetch(`${import.meta.env.VITE_URL}/api/user/listing/${currentUser._id}`);
       const data = await res.json();
-      if (data.succcess === false) {
+      if (data.success === false) {
         setListingError(true);
 
         return;
@@ -159,13 +160,13 @@ const Profile = () => {
 
   const handleListingDelete = async (listingId) => {
     try {
-      const res = await fetch(`/api/listing/delete/${listingId}`, {
+      const res = await fetch(`${import.meta.env.VITE_URL}/api/listing/delete/${listingId}`, {
         method: "DELETE",
       });
 
       const data = await res.json();
 
-      if (data.succcess === false) {
+      if (data.success === false) {
         console.log(data.message);
         return;
       }
