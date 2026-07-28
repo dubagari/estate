@@ -34,7 +34,7 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://your-client.vercel.app"
+   "https://estate-client.vercel.app",
 ];
 
 app.use(
@@ -75,6 +75,8 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log("server is running at port 3000");
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

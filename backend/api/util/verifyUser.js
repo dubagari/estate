@@ -9,9 +9,11 @@ export const verifyToken = (req, res, next) => {
 
   jwt.verify(token, process.env.jwt_secrete, (err, user) => {
     if (err) return next(errorHandler(403, "forbidden"));
-
-
+    
     req.user = user;
+    console.log("Decoded JWT:", user);
+    console.log("req.user.id:", req.user.id);
+    console.log("req.params.id:", req.params.id);
     next();
   });
 };

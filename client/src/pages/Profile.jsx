@@ -40,7 +40,7 @@ const Profile = () => {
 console.log("currentUser:", currentUser);
 console.log("currentUser._id:", currentUser?._id);
 
-
+console.log("API URL:", import.meta.env.VITE_URL);
 
   useEffect(() => {
     if (file) {
@@ -84,7 +84,8 @@ console.log("currentUser._id:", currentUser?._id);
 
     try {
       dispatch(updateUserStart());
-
+      
+      console.log("Sending formdata:", formdata);
       const res = await fetch(`${import.meta.env.VITE_URL}/api/user/update/${currentUser._id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -145,7 +146,9 @@ console.log("currentUser._id:", currentUser?._id);
     try {
       setListingError(false);
       setShowlistin(true);
-      const res = await fetch(`${import.meta.env.VITE_URL}/api/user/listing/${currentUser._id}`);
+      const res = await fetch(`${import.meta.env.VITE_URL}/api/user/listing/${currentUser._id}`,{
+        credentials: "include",
+      });
       const data = await res.json();
       if (data.success === false) {
         setListingError(true);
@@ -162,6 +165,7 @@ console.log("currentUser._id:", currentUser?._id);
     try {
       const res = await fetch(`${import.meta.env.VITE_URL}/api/listing/delete/${listingId}`, {
         method: "DELETE",
+        credentials: "include",
       });
 
       const data = await res.json();

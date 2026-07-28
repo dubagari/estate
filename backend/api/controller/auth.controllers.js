@@ -8,6 +8,9 @@ export const signup = async (req, res, next) => {
   const hassPassword = bcryptjs.hashSync(password, 10);
   const newUser = new User({ username, email, password: hassPassword });
 
+  console.log("Decoded JWT:", user);
+  
+
   const existingUser = await User.findOne({ email });
 
   try {
@@ -32,8 +35,11 @@ export const signin = async (req, res, next) => {
     const token = jwt.sign({ id: validUser._id }, process.env.jwt_secrete);
     const { password: pass, ...ress } = validUser._doc;
 
-    res
-      .cookie("access_token", token, { httpOnly: true })
+    res.cookie("access_token", token, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+})
       .status(200)
       .json(ress);
   } catch (error) {
@@ -46,8 +52,11 @@ export const google = async (req, res, next) => {
   if (user) {
     const token = jwt.sign({ id: user._id }, process.env.jwt_secrete);
     const { password: pass, ...rest } = user._doc;
-    res
-      .cookie("access_token", token, { httpOnly: true })
+    res.cookie("access_token", token, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+})
       .status(200)
       .json(rest);
   } else {
@@ -66,9 +75,11 @@ export const google = async (req, res, next) => {
     await newUser.save();
     const token = jwt.sign({ id: newUser._id }, process.env.jwt_secrete);
     const { password: pass, ...rest } = newUser._doc;
-    res
-      .cookie("access_token", token, { httpOnly: true })
-      .status(200)
+    res.cookie("access_token", token, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+})      .status(200)
       .json(rest);
   }
   try {
