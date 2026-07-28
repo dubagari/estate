@@ -4,13 +4,12 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { app } from "../firebase";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import Button from "./components/Button";
+import { useNavigate, useParams } from "react-router-dom";
 
-const CreateListing = () => {
+const UpdateListing = () => {
   const [files, setFiles] = useState([]);
   const [formData, setFormData] = useState({
     imageUrl: [],
@@ -32,8 +31,25 @@ const CreateListing = () => {
   const [loading, setLoading] = useState(false);
   const { currentUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const params = useParams();
 
-  console.log(formData);
+  useEffect(() => {
+    const fetchListing = async () => {
+      const listingId = params.id;
+      const res = await fetch(`${import.meta.env.VITE_URL}/api/listing/get/${listingId}`);
+
+      const data = await res.json();
+
+      if (data.success === false) {
+        console.log(data.message);
+        return;
+      }
+
+      setFormData(data);
+    };
+
+    fetchListing();
+  }, []);
 
   const handlefileuplod = async () => {
     if (files.length > 0 && files.length + formData.imageUrl.length < 7) {
@@ -80,34 +96,22 @@ const CreateListing = () => {
   };
 
   const handleChange = (e) => {
-    if (e.target.id === "sell" || e.target.id === "rent") {
-      setFormData({
-        ...formData,
-        type: e.target.id,
-      });
+    const { id, type, checked, value } = e.target;
+
+    if (id === "sell" || id === "rent") {
+      setFormData((prev) => ({ ...prev, type: id }));
+      return;
     }
 
-    if (
-      e.target.id === "furnished" ||
-      e.target.id === "offer" ||
-      e.target.id === "parking"
-    ) {
-      setFormData({
-        ...formData,
-        [e.target.id]: e.target.checked,
-      });
+    if (id === "furnished" || id === "offer" || id === "parking") {
+      setFormData((prev) => ({ ...prev, [id]: checked }));
+      return;
     }
 
-    if (e.target.type === "number") {
-      setFormData({
-        ...formData,
-        [e.target.id]: Number(e.target.value),
-      });
-    } else if (e.target.type === "text" || e.target.type === "textarea") {
-      setFormData({
-        ...formData,
-        [e.target.id]: e.target.value,
-      });
+    if (type === "number") {
+      setFormData((prev) => ({ ...prev, [id]: Number(value) }));
+    } else if (type === "text" || type === "textarea") {
+      setFormData((prev) => ({ ...prev, [id]: value }));
     }
   };
 
@@ -116,16 +120,16 @@ const CreateListing = () => {
     try {
       if (formData.imageUrl.length < 1)
         return setError("you must upload at lest 1 image");
-      if (formData.regularprice < formData.discountprice)
+      if (+formData.regularprice < +formData.discountprice)
         return setError("Discount price must be less tha regular price ");
       setLoading(true);
       setError(false);
-      const res = await fetch(`${import.meta.env.VITE_URL}/api/listing/create`, {
+      const res = await fetch(`${import.meta.env.VITE_URL}/api/listing/updated/${params.id}`, {
         method: "POST",
-        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({ ...formData, userRef: currentUser._id }),
       });
       const data = await res.json();
@@ -143,8 +147,8 @@ const CreateListing = () => {
 
   return (
     <main className="max-w-4xl m-auto p-3">
-      <h1 className="text-3xl font-semibold text-center my-7">
-        Create A Listing
+      <h1 className="text-3xl font-semibold text-center my-7 capitalize">
+        updating A List
       </h1>
       <form
         onSubmit={handleSubmit}
@@ -179,8 +183,9 @@ const CreateListing = () => {
           <div className="flex flex-wrap gap-6">
             <div className="flex gap-2">
               <input
-                type="checkbox"
-                className="w-5 "
+                type="radio"
+                className="w-5"
+                name="type"
                 id="sell"
                 onChange={handleChange}
                 checked={formData.type === "sell"}
@@ -189,8 +194,9 @@ const CreateListing = () => {
             </div>
             <div className="flex gap-2">
               <input
-                type="checkbox"
+                type="radio"
                 className="w-5"
+                name="type"
                 id="rent"
                 onChange={handleChange}
                 checked={formData.type === "rent"}
@@ -203,7 +209,7 @@ const CreateListing = () => {
                 className="w-5"
                 id="parking"
                 onChange={handleChange}
-                checked={formData.parking}
+                value={formData.parking}
               />
               <span>parking spot</span>
             </div>
@@ -213,7 +219,7 @@ const CreateListing = () => {
                 className="w-5"
                 id="furnished"
                 onChange={handleChange}
-                checked={formData.furnished}
+                value={formData.furnished}
               />
               <span>Funished</span>
             </div>
@@ -223,7 +229,7 @@ const CreateListing = () => {
                 className="w-5"
                 id="offer"
                 onChange={handleChange}
-                checked={formData.offer}
+                value={formData.offer}
               />
               <span>Offer</span>
             </div>
@@ -275,8 +281,6 @@ const CreateListing = () => {
                 <input
                   type="number"
                   className="h-9 w-12 focus:outline-none"
-                  min="0"
-                  max="100000"
                   id="discountprice"
                   onChange={handleChange}
                   value={formData.discountprice}
@@ -330,11 +334,13 @@ const CreateListing = () => {
                 </button>
               </div>
             ))}
-          <Button
-            disabled={uploading || loading}
-            title={loading ? "creating..." : "creating listing"}
-          />
 
+          <button
+            disabled={uploading || loading}
+            className="p-3 bg-gray-800 text-white uppercase rounded-lg hover:shadow-lg disabled:opacity-90"
+          >
+            {loading ? "Updating..." : "Updating listing"}
+          </button>
           {error && <p className="text-red-700">{error}</p>}
         </div>
       </form>
@@ -342,4 +348,4 @@ const CreateListing = () => {
   );
 };
 
-export default CreateListing;
+export default UpdateListing;

@@ -37,10 +37,6 @@ const Profile = () => {
 
   const dispatch = useDispatch();
 
-console.log("currentUser:", currentUser);
-console.log("currentUser._id:", currentUser?._id);
-
-console.log("API URL:", import.meta.env.VITE_URL);
 
   useEffect(() => {
     if (file) {
@@ -59,33 +55,36 @@ console.log("API URL:", import.meta.env.VITE_URL);
     uploadTask.on(
       "state_changed",
       (snapshot) => {
-        const prograss =
+        const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
 
-        setFilePercentage(Math.round(prograss));
+        setFilePercentage(Math.round(progress));
       },
-      (error) => {
+      () => {
         setFileuploadError(true);
       },
       () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl) =>
-          setFormData({ ...formdata, avater: downloadUrl })
-        );
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl) => {
+          setFormData((prev) => ({ ...prev, avater: downloadUrl }));
+        });
       }
     );
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formdata, [e.target.id]: e.target.value });
+    setFormData((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!currentUser?._id) {
+      dispatch(updateUserFailure("Please sign in first"));
+      return;
+    }
+
     try {
       dispatch(updateUserStart());
-      
-      console.log("Sending formdata:", formdata);
       const res = await fetch(`${import.meta.env.VITE_URL}/api/user/update/${currentUser._id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -107,6 +106,11 @@ console.log("API URL:", import.meta.env.VITE_URL);
   };
 
   const handleDeleteUser = async () => {
+    if (!currentUser?._id) {
+      dispatch(deleteUsereFailure("Please sign in first"));
+      return;
+    }
+
     try {
       dispatch(deleteUserStatar());
       const res = await fetch(`${import.meta.env.VITE_URL}/api/user/delete/${currentUser._id}`, {
@@ -143,6 +147,11 @@ console.log("API URL:", import.meta.env.VITE_URL);
   };
 
   const handleShowListings = async () => {
+    if (!currentUser?._id) {
+      setListingError(true);
+      return;
+    }
+
     try {
       setListingError(false);
       setShowlistin(true);
@@ -195,7 +204,7 @@ console.log("API URL:", import.meta.env.VITE_URL);
         <img
           onClick={() => fileref.current.click()}
           className="self-center rounded-full h-20 w-20 cursor-pointer mt-2"
-          src={formdata.avater || currentUser.avater}
+          src={formdata.avater || currentUser?.avater || ""}
           alt="profile"
         />
 
@@ -215,14 +224,14 @@ console.log("API URL:", import.meta.env.VITE_URL);
         <input
           type="text"
           placeholder="username"
-          defaultValue={currentUser.username}
+          defaultValue={currentUser?.username || ""}
           id="username"
           onChange={handleChange}
           className="rounded-lg p-2 focus:outline-none"
         />
         <input
           type="email"
-          defaultValue={currentUser.email}
+          defaultValue={currentUser?.email || ""}
           placeholder="email"
           id="email"
           onChange={handleChange}

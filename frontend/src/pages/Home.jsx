@@ -12,42 +12,31 @@ const Home = () => {
   const [sellListing, setSellListing] = useState([]);
   const [rentListing, setRentListing] = useState([]);
   SwiperCore.use([Navigation]);
-  console.log(offerListing);
-  console.log(sellListing);
-  console.log(rentListing);
 
   useEffect(() => {
-    const offerListing = async () => {
+    const fetchListings = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_URL}/api/listing/get?offer=true&limit=4`);
-        const data = await res.json();
-        setOfferListing(data);
-        rentListing();
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    const rentListing = async () => {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_URL}/api/listing/get?type=rent&limit=4`);
-        const data = await res.json();
-        setRentListing(data);
-        sellListing();
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    const sellListing = async () => {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_URL}/api/listing/get?type=sell&limit=4`);
-        const data = await res.json();
-        setSellListing(data);
+        const [offerRes, rentRes, sellRes] = await Promise.all([
+          fetch(`${import.meta.env.VITE_URL}/api/listing/get?offer=true&limit=4`),
+          fetch(`${import.meta.env.VITE_URL}/api/listing/get?type=rent&limit=4`),
+          fetch(`${import.meta.env.VITE_URL}/api/listing/get?type=sell&limit=4`),
+        ]);
+
+        const [offerData, rentData, sellData] = await Promise.all([
+          offerRes.json(),
+          rentRes.json(),
+          sellRes.json(),
+        ]);
+
+        setOfferListing(offerData);
+        setRentListing(rentData);
+        setSellListing(sellData);
       } catch (error) {
         console.log(error);
       }
     };
 
-    offerListing();
+    fetchListings();
   }, []);
   return (
     <div>

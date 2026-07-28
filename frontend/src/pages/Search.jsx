@@ -149,7 +149,7 @@ const Search = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-5">
       {/* Sidebar */}
-      <div className="lg:col-span-1 border rounded-xl p-6 h-fit">
+      <div className="lg:col-span-1 border border-slate-300 rounded-xl p-6 h-fit">
         <form onSubmit={handleSubmit}>
           <div className="flex items-center gap-2 mb-6">
             <label className="font-semibold whitespace-nowrap">

@@ -47,10 +47,9 @@ const SignIn = () => {
 
       navigate("/");
     } catch (error) {
-      dispatch(signInFailure(error.massage));
+      dispatch(signInFailure(error.message));
     }
   };
-  console.log(formData);
 
   return (
     <div className="max-w-lg mx-auto p-3">
