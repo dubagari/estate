@@ -147,9 +147,9 @@ const Search = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-5">
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
       {/* Sidebar */}
-      <div className="lg:col-span-1 border border-slate-300 rounded-xl p-6 h-fit">
+      <div className="lg:col-span-1 border-b-2  md:border-r-2 md:border-slate-300  p-7">
         <form onSubmit={handleSubmit}>
           <div className="flex items-center gap-2 mb-6">
             <label className="font-semibold whitespace-nowrap">
@@ -247,7 +247,7 @@ const Search = () => {
       </div>
 
       {/* Listings */}
-      <div className="lg:col-span-3">
+      <div className="lg:col-span-3 p-7">
         <h1 className="text-3xl font-bold mb-6 text-slate-700">
           Listing Results
         </h1>
