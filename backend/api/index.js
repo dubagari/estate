@@ -52,6 +52,12 @@ app.use(
   })
 );
 
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    message: "Estate API is running 🚀",
+  });
+});
 
 app.use(express.json());
 
@@ -75,7 +81,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
